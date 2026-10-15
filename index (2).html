@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="ko"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>[전지적 독자 시점, 명문장]</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@600;900&family=Noto+Sans+KR:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#090b17;--panel:#121528;--line:#2a3057;--cy:#7fe3ff;--gold:#ffcf5a;--tx:#e8e6f0;--mut:#8b90b8;--red:#ff7a8a}
+@media(prefers-color-scheme:light){:root{--bg:#f1f0f7;--panel:#fff;--line:#c9cbe3;--cy:#1d6f8f;--gold:#9a6a00;--tx:#171a33;--mut:#5b6088;--red:#c0283d}}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--tx);font-family:'Noto Sans KR',system-ui,sans-serif;padding:env(safe-area-inset-top) 0 env(safe-area-inset-bottom)}
+main{max-width:760px;margin:0 auto;padding:20px 16px 60px}
+h1{margin:20px 0 4px;font-family:'Noto Serif KR',serif;font-weight:900;font-size:clamp(26px,7vw,44px);line-height:1.25}
+header p{margin:0 0 16px;color:var(--mut);font-size:14px}
+button,select,input,textarea{font:16px 'Noto Sans KR',sans-serif;color:var(--tx);background:var(--panel);border:1px solid var(--line);padding:9px 12px;min-height:44px}
+button{font-size:14px;font-weight:700;cursor:pointer;background:transparent}button:hover:not(:disabled){border-color:var(--cy)}
+button.on{border-color:var(--gold);color:var(--gold)}button.rp.on,#rp.on{border-color:var(--red);color:var(--red)}
+nav,#ctl{display:flex;gap:8px;flex-wrap:wrap;margin:0 0 10px}
+#sw,.row{display:flex;gap:8px}#sw{margin-bottom:8px}#sq,.row input{flex:1;min-width:0}
+#hero{margin:8px 0;padding:22px;border:1px solid var(--cy);background:var(--panel);display:flex;flex-direction:column;gap:16px;min-height:150px;justify-content:space-between}
+#hq{font-family:'Noto Serif KR',serif;font-weight:600;font-size:clamp(19px,4.6vw,26px);line-height:1.6;white-space:pre-wrap;word-break:keep-all}
+#hero div{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;color:var(--mut);font-size:13px}
+#form{margin:12px 0;padding:14px;border:1px solid var(--line);background:var(--panel);display:grid;gap:8px}
+#form textarea,#form input,#form select{width:100%;background:var(--bg)}#form select{width:auto}
+#form button{border-color:var(--gold);color:var(--gold)}
+#note{color:var(--mut);font-size:13px;min-height:18px;margin:4px 0}
+.c{background:var(--panel);border:1px solid var(--line);padding:14px 16px;display:flex;gap:12px;justify-content:space-between;margin-bottom:10px}
+.c span{font-family:'Noto Serif KR',serif;line-height:1.7;white-space:pre-wrap;word-break:keep-all;cursor:pointer}
+.c small{display:block;color:var(--mut);font:12px 'Noto Sans KR',sans-serif;margin-top:4px}
+.bt{display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end;flex:none}.bt button{min-height:34px;padding:6px 10px}
+.empty,footer{color:var(--mut);text-align:center;font-size:13px;padding:20px 0}footer a{color:var(--mut)}
+#toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:var(--gold);color:#111;padding:10px 16px;font-weight:700;font-size:14px;opacity:0;pointer-events:none;transition:opacity .2s}#toast.on{opacity:1}
+dialog{background:var(--panel);color:var(--tx);border:1px solid var(--cy)}dialog form{display:grid;gap:8px}
+@media(max-width:520px){.c{flex-direction:column}.bt{justify-content:stretch}.bt button{flex:1;min-height:44px}.row{flex-wrap:wrap}}
+</style></head><body><main>
+<header><h1>[전지적 독자 시점, 명문장]</h1><p>모두가 함께 채워가는 문장 모음 · 로그인 없이 이용</p></header>
+<nav id="pt"></nav>
+<div id="sw"><select id="ss" aria-label="검색 범위"><option value="all">전체</option><option value="text">문장</option><option value="cat">인물</option><option value="src">출처</option></select><input id="sq" type="search" placeholder="검색어를 입력하세요"></div>
+<div id="ctl"><button id="so">정렬: 에피소드순</button><button id="ml">♥ 내 좋아요</button><button id="rp" hidden>🚩 신고된 문장</button></div>
+<section id="hero"><div id="hq">불러오는 중…</div><div><span id="hc"></span><span><button id="nx">다음 문장</button> <button id="hs">이미지</button></span></div></section>
+<section id="form"><textarea id="nt" rows="3" maxlength="300" placeholder="좋아하는 문장을 붙여 넣으세요" aria-label="문장"></textarea>
+<div class="row"><select id="np"><option>본편</option><option>외전</option></select><input id="nc" maxlength="20" placeholder="분류 (예: 김독자)"></div>
+<div class="row"><input id="ns" maxlength="40" placeholder="출처 (예: Episode 1)"><button id="add">추가</button></div></section>
+<div id="note"></div><div id="list"></div>
+<footer><div id="st">연결 확인 중…</div><a href="#" id="al">관리자</a></footer></main>
+<dialog id="dlg"><form method="dialog" id="af"><input id="ap" type="password" placeholder="관리자 비밀번호" autocomplete="current-password" required><button>로그인</button></form></dialog>
+<div id="toast"></div>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
+<script>
+const SUPABASE_URL='https://lhhzuvsiinulmrbhsevf.supabase.co',SUPABASE_KEY='sb_publishable_ZPDRhqYJvpSlAdWV8wRnNw_9rXdfCCD';
+const $=s=>document.querySelector(s);let sb=null;try{sb=supabase.createClient(SUPABASE_URL,SUPABASE_KEY)}catch(e){}
+const norm=s=>String(s).replace(/[\s"'“”‘’「」『』.,!?…·~\-―—]/g,'').toLowerCase();
+const ep=s=>{const m=String(s||'').match(/\d+/);return m?+m[0]:Infinity};
+let me,admin=false,Q=[],LC={},ML=new Set(),RC={},MR=new Set(),part='전체',sortM='ep',onlyMine=false,onlyRep=false,sq='',sc='all',pick=null;
+const pt=q=>q.part==='외전'?'외전':'본편',meta=q=>[pt(q),q.cat,q.src].filter(Boolean).join(' · ');
+const byEp=(a,b)=>{const pa=pt(a)==='외전'?1:0,pb=pt(b)==='외전'?1:0;if(pa!==pb)return pa-pb;const x=ep(a.src),y=ep(b.src);if(x!==y)return x<y?-1:1;return a.created_at<b.created_at?-1:1};
+function toast(m){const t=$('#toast');t.textContent=m;t.classList.add('on');setTimeout(()=>t.classList.remove('on'),1400)}
+const note=m=>$('#note').textContent=m||'';
+function hero(q){pick=q||null;$('#hq').textContent=q?q.text:'아직 문장이 없어요. 첫 문장을 추가해 보세요.';$('#hc').textContent=q?meta(q):''}
+async function load(){
+ const [a,b,c]=await Promise.all(['quotes','likes','reports'].map(t=>sb.from(t).select('*').limit(5000)));
+ if(a.error){$('#st').textContent='연결 안 됨';note('불러오지 못했어요: '+a.error.message);return}
+ Q=a.data;$('#st').textContent='연결됨 · 문장 '+Q.length+'개';LC={};ML=new Set();RC={};MR=new Set();
+ (b.data||[]).forEach(x=>{LC[x.quote_id]=(LC[x.quote_id]||0)+1;if(x.user_id===me)ML.add(x.quote_id)});
+ (c.data||[]).forEach(x=>{RC[x.quote_id]=(RC[x.quote_id]||0)+1;if(x.user_id===me)MR.add(x.quote_id)});
+ if(!pick||!Q.find(q=>q.id===pick.id))hero(Q[Math.floor(Math.random()*Q.length)]);
+ render()}
+async function tog(t,q,on){const r=on?await sb.from(t).delete().match({quote_id:q.id,user_id:me}):await sb.from(t).insert({quote_id:q.id});if(r.error)toast('실패했어요');await load()}
+function render(){
+ const P=$('#pt');P.innerHTML='';['전체','본편','외전'].forEach(p=>{const b=document.createElement('button');b.textContent=p;if(p===part)b.className='on';b.onclick=()=>{part=p;render()};P.appendChild(b)});
+ const k=norm(sq);let items=Q.filter(q=>(part==='전체'||pt(q)===part)&&(!onlyMine||ML.has(q.id))&&(!onlyRep||(RC[q.id]||0)>0)&&(!k||norm(sc==='text'?q.text:sc==='cat'?(q.cat||''):sc==='src'?q.src:[q.text,q.cat,q.src].join(' ')).includes(k)));
+ items.sort(sortM==='like'?(a,b)=>(LC[b.id]||0)-(LC[a.id]||0)||byEp(a,b):byEp);
+ if(onlyRep)items.sort((a,b)=>(RC[b.id]||0)-(RC[a.id]||0));
+ const L=$('#list');L.innerHTML='';
+ if(!items.length){const e=document.createElement('div');e.className='empty';e.textContent=k?'검색 결과가 없어요.':onlyMine?'좋아요한 문장이 없어요.':onlyRep?'신고된 문장이 없어요.':'아직 문장이 없어요.';L.appendChild(e);return}
+ items.forEach(q=>{const d=document.createElement('div');d.className='c';const mine=q.user_id===me;
+  const s=document.createElement('span');s.textContent=q.text;const sm=document.createElement('small');sm.textContent=meta(q);s.appendChild(sm);s.onclick=()=>hero(q);
+  const bt=document.createElement('div');bt.className='bt';
+  const mk=(t,f,c)=>{const b=document.createElement('button');b.textContent=t;if(c)b.className=c;b.onclick=f;bt.appendChild(b)};
+  mk('♥ '+(LC[q.id]||0),()=>tog('likes',q,ML.has(q.id)),ML.has(q.id)?'on':'');
+  mk('복사',()=>{try{navigator.clipboard.writeText(q.text)}catch(e){}toast('복사했어요')});
+  mk('이미지',()=>saveImg(q));
+  if(mine||admin)mk('수정',async()=>{
+   const text=prompt('명언 문장',q.text);if(text===null)return;
+   const clean=text.trim();if(!clean){toast('문장을 비울 수 없어요');return}
+   const cat=prompt('인물/분류',q.cat||'');if(cat===null)return;
+   const src=prompt('출처',q.src||'');if(src===null)return;
+   const part=prompt('구분: 본편 또는 외전',pt(q));if(part===null)return;
+   if(!['본편','외전'].includes(part.trim())){toast('구분은 본편 또는 외전으로 입력해 주세요');return}
+   const {error}=await sb.from('quotes').update({text:clean,cat:cat.trim().slice(0,20),src:src.trim().slice(0,40),part:part.trim()}).eq('id',q.id);
+   if(error){toast('수정하지 못했어요: '+error.message);return}
+   toast('수정했어요');await load()
+  });
+  if(mine||admin)mk('삭제',async()=>{if(!confirm('이 문장을 삭제할까요?'))return;const r=await sb.from('quotes').delete().eq('id',q.id);if(r.error)toast('삭제하지 못했어요');await load()});
+  if(admin){if(RC[q.id])mk('🚩 신고 '+RC[q.id],async()=>{
+    if(!confirm('이 문장에 대한 신고를 모두 취소할까요?'))return;
+    const {error}=await sb.from('reports').delete().eq('quote_id',q.id);
+    if(error){toast('신고를 처리하지 못했어요: '+error.message);return}
+    toast('신고를 취소했어요');await load()
+  },'rp on')}else if(!mine)mk(MR.has(q.id)?'신고 취소':'신고',()=>tog('reports',q,MR.has(q.id)),'rp'+(MR.has(q.id)?' on':''));
+  d.appendChild(s);d.appendChild(bt);L.appendChild(d)})}
+async function saveImg(q){
+ try{await document.fonts.load('600 40px "Noto Serif KR"',q.text)}catch(e){}
+ const W=1080,MX=W-240,c=document.createElement('canvas');c.width=c.height=W;const g=c.getContext('2d');
+ g.fillStyle='#090b17';g.fillRect(0,0,W,W);g.strokeStyle='#7fe3ff';g.lineWidth=4;g.strokeRect(48,48,W-96,W-96);
+ g.textAlign='center';g.fillStyle='#ffcf5a';g.font='700 36px "Noto Sans KR",sans-serif';g.fillText('[전지적 독자 시점, 명문장]',W/2,150);
+ const F='"Noto Serif KR",serif',wrap=fs=>{g.font='600 '+fs+'px '+F;const o=[];q.text.split('\n').forEach(p=>{let u='';p.split(' ').forEach(w=>{const t=u?u+' '+w:w;if(g.measureText(t).width<=MX)u=t;else{if(u)o.push(u);if(g.measureText(w).width<=MX)u=w;else{u='';[...w].forEach(h=>{if(g.measureText(u+h).width<=MX)u+=h;else{o.push(u);u=h}})}}});o.push(u)});return o};
+ let fs=60,ls=wrap(fs);while(fs>28&&ls.length*fs*1.6>640){fs-=4;ls=wrap(fs)}
+ g.fillStyle='#e8e6f0';g.font='600 '+fs+'px '+F;let y=W/2-ls.length*fs*.8+fs*1.2;ls.forEach(l=>{g.fillText(l,W/2,y);y+=fs*1.6});
+ g.fillStyle='#8b90b8';g.font='400 32px "Noto Sans KR",sans-serif';g.fillText(meta(q),W/2,W-110);
+ const a=document.createElement('a');a.href=c.toDataURL('image/png');a.download='명문장.png';a.click()}
+$('#add').onclick=async()=>{note('');const text=$('#nt').value.trim();if(!text){note('문장을 먼저 입력해 주세요.');$('#nt').focus();return}
+ if(!sb||!me){note('아직 서버에 연결되지 않았어요. 맨 아래 연결 상태를 확인해 주세요.');return}
+ note('추가하는 중…');
+ if(Q.some(q=>norm(q.text)===norm(text))){note('이미 있는 문장이에요.');return}
+ const {error}=await sb.from('quotes').insert({text,part:$('#np').value,cat:$('#nc').value.trim().slice(0,20),src:$('#ns').value.trim().slice(0,40)});
+ if(error){console.error(error);note(error.code==='23505'?'이미 있는 문장이에요.':error.code==='42P01'?'테이블이 없어요. schema.sql을 SQL Editor에서 실행했는지 확인해 주세요.':error.code==='42501'?'권한 규칙 오류예요(RLS). schema.sql을 끝까지 실행했는지, 익명 로그인이 켜져 있는지 확인해 주세요.':'추가하지 못했어요: '+(error.message||error.code));return}
+ ['#nt','#nc','#ns'].forEach(i=>$(i).value='');note('');toast('추가했어요');load()};
+$('#nx').onclick=()=>{if(Q.length>1){let n;do{n=Q[Math.floor(Math.random()*Q.length)]}while(n.id===pick.id);hero(n)}};
+$('#hs').onclick=()=>pick&&saveImg(pick);
+$('#sq').oninput=e=>{sq=e.target.value;render()};$('#ss').onchange=e=>{sc=e.target.value;render()};
+$('#so').onclick=()=>{sortM=sortM==='ep'?'like':'ep';$('#so').textContent='정렬: '+(sortM==='ep'?'에피소드순':'좋아요순');render()};
+$('#ml').onclick=()=>{onlyMine=!onlyMine;$('#ml').className=onlyMine?'on':'';render()};
+$('#rp').onclick=()=>{onlyRep=!onlyRep;$('#rp').className=onlyRep?'on':'';render()};
+$('#al').onclick=e=>{e.preventDefault();if(admin){sb.auth.signOut().then(()=>location.reload())}else $('#dlg').showModal()};
+$('#af').onsubmit=async e=>{e.preventDefault();const password=$('#ap').value;const btn=$('#af button');if(!btn){toast('로그인 버튼을 찾지 못했어요');return}btn.disabled=true;btn.textContent='확인 중…';try{const res=await fetch('/api/admin-login',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({password})});const data=await res.json().catch(()=>({}));if(!res.ok||!data.access_token||!data.refresh_token){toast(data.error||'로그인에 실패했어요');return}const {error}=await sb.auth.setSession({access_token:data.access_token,refresh_token:data.refresh_token});if(error){toast('로그인 세션을 만들지 못했어요');return}location.reload()}catch(err){toast('관리자 로그인 서버를 배포해야 해요')}finally{btn.disabled=false;btn.textContent='로그인'}};
+$('#ac').onclick=()=>$('#dlg').close();
+(async()=>{
+ if(!sb||/^여기에/.test(SUPABASE_URL)||/^여기에/.test(SUPABASE_KEY)){$('#hq').textContent='설정이 아직 안 끝났어요.';$('#st').textContent='연결 안 됨 (URL/키 설정 필요)';note('index.html 위쪽의 SUPABASE_URL과 SUPABASE_KEY를 본인 값으로 바꿔 주세요.');return}
+ let {data:{session}}=await sb.auth.getSession();
+ if(!session){const r=await sb.auth.signInAnonymously();if(r.error){$('#st').textContent='연결 안 됨 (익명 로그인 확인)';note('접속하지 못했어요: '+r.error.message);return}session=r.data.session}
+ me=session.user.id;const a=await sb.rpc('is_admin');admin=a.data===true;
+ if(admin){$('#rp').hidden=false;$('#al').textContent='관리자 로그아웃';$('#rp').title='신고된 문장 보기'}
+ load();document.addEventListener('visibilitychange',()=>{if(!document.hidden)load()})})();
+</script></body></html>
